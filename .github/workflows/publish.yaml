@@ -23,8 +23,8 @@ jobs:
           /bin/bash run.sh install
           /bin/bash run.sh build
           /bin/bash run.sh publish:test
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
   
   dump-context-to-log:
     runs-on: ubuntu-latest
