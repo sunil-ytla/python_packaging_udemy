@@ -21,13 +21,13 @@ jobs:
           python-version: 3.8
       - name: Install dependencies
         run: |
-          /bin/bash run.sh install
+          /bin/bash -x run.sh install
       - name: Build package
         run: |
-          /bin/bash run.sh build
+          /bin/bash -x run.sh build
       - name: Publish package
         run: |
-          /bin/bash run.sh publish:test
+          /bin/bash -x run.sh publish:test
         env:
           TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
   
