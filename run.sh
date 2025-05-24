@@ -26,6 +26,10 @@ function lint {
     pre-commit run --all-files
 }
 
+function lint:ci {
+    SKIP=no-commit-to-branch pre-commit run --all-files
+}
+
 function build {
     python -m build --sdist --wheel "$THIS_DIR/"
 }

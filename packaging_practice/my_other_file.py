@@ -1,1 +1,1 @@
-CONSTANT = 'hi there 1'
+CONSTANT = "hi there 1"
