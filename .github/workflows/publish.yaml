@@ -86,7 +86,7 @@ jobs:
           TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
       - name: Publish package to PyPI
         run: |
-          /bin/bash -x run.sh publish:test
+          /bin/bash -x run.sh publish:prod
         env:
           TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
       - name: Tag Release Version
