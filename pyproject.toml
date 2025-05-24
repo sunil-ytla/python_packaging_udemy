@@ -33,7 +33,9 @@ dev = ["python-course-package-sunil[test,release,static-code-qa]"]
 version = { file = "version.txt" }
 
 [tool.pytest.ini_options]
-markers = ["slow: marks tests as slow (deselect with '-m \"not slow\"')"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 
 [tool.black]
 line-length = 88
