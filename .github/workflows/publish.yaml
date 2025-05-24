@@ -76,8 +76,6 @@ jobs:
         with:
           name: wheel-and-sdist
           path: ./dist/
-      - name: Display structure of downloaded files
-        run: ls -R your/destination/dir
       - name: Install twine
         run: |
           pip install twine
