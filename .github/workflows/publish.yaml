@@ -58,7 +58,7 @@ jobs:
           path: ./dist/
       - name: Install test dependencies
         run: |
-          pip instal pytest pytest-cov ./dist/*.whl
+          pip install pytest pytest-cov ./dist/*.whl
       - name: Lint, Format and other code quality checks
         run: |
           /bin/bash -x run.sh test:ci
