@@ -7,25 +7,94 @@ on:
     branches:
       - main # when code is pushed to the main branch, this will be done mostly by merging PRs
   workflow_dispatch: # allows manual triggering of the workflow from the GitHub UI
-    
+
 
 jobs:
 
-  build-test-and-publish:
+  check-version-txt:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python 3.8
+        with:
+          fetch-depth: 0 # fetch all history for all branches and tags
+      - name: Tag with release version
+        run: |
+          git tag $(cat version.txt)
+
+  lint-format-and-static-code-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.13
         uses: actions/setup-python@v3
         with:
-          python-version: 3.8
-      - run: |
-          /bin/bash run.sh install
-          /bin/bash run.sh build
-          /bin/bash run.sh publish:test
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
-  
+          python-version: 3.13
+      - name: Install pre-commit
+        run: |
+          pip install pre-commit
+      - name: Lint, Format and other code quality checks
+        run: |
+          /bin/bash -x run.sh lint:ci
+
+  build-wheel-and-sdist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.13
+      - name: Install Build CLI
+        run: |
+          pip install build
+      - name: Build package
+        run: |
+          /bin/bash -x run.sh build
+      - name: Upload wheel and sdist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheel-and-sdist
+          path: ./dist/*
+          retention-days: 1
+
+
+  publish:
+    needs:
+      - build-wheel-and-sdist
+      - lint-format-and-static-code-checks
+      - check-version-txt
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.13
+      - name: download wheel and sdist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: wheel-and-sdist
+          path: ./dist/
+      - name: Display structure of downloaded files
+        run: ls -R your/destination/dir
+      - name: Install twine
+        run: |
+          pip install twine
+      - name: Publish package to test PyPI
+        run: |
+          /bin/bash -x run.sh publish:test
+        env:
+          TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+      - name: Publish package to PyPI
+        run: |
+          /bin/bash -x run.sh publish:test
+        env:
+          TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}
+      - name: Tag Release Version
+        run: |
+          git push origin --tags
+
   dump-context-to-log:
     runs-on: ubuntu-latest
     steps:

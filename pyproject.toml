@@ -14,19 +14,19 @@ authors = [
 ]
 description = "My package description"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.13"
 keywords = ["one", "two"]
 license = { text = "MIT" }
 classifiers = ["Programming Language :: Python :: 3"]
 dependencies = ["numpy", 'importlib-metadata; python_version<"3.8"']
-# dynamic = ["version"]
-version = "0.0.0"
+dynamic = ["version"]
+# version = "0.0.3"
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
 release = ["build", "twine"]
 static-code-qa = ["pre-commit"]
-dev = ["python-course-package[test,release,static-code-qa]"]
+dev = ["python-course-package-sunil[test,release,static-code-qa]"]
 
 # docs: https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html#dynamic-metadata
 [tool.setuptools.dynamic]
@@ -37,11 +37,11 @@ markers = ["slow: marks tests as slow (deselect with '-m \"not slow\"')"]
 
 [tool.black]
 line-length = 88
-exclude = ["venv"]
+exclude = "venv"
 
 [tool.flake8]
 docstring-convention = "all"
-ignore = ["D107", "D212", "E501", "W503", "W605", "D203", "D100"]
+ignore = ["D107", "D212", "E501", "W503", "W605", "D203", "D100", "D104", "E231"]
 exclude = ["venv"]
 max-line-length = 88
 
@@ -63,6 +63,7 @@ disable = [
     "import-error",
     "too-few-public-methods",
     "redefined-outer-name",
+    "missing-module-docstring"
 ]
 
 [tool.ruff]
